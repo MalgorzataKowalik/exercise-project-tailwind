@@ -22,7 +22,8 @@ function App() {
   function handleAddNewProject(newProjectData) {
     const newProject = {
       ...newProjectData,
-      id: Math.random()
+      id: Math.random(),
+      tasks: []
     }
 
     setProjectsState(prev => {
@@ -53,7 +54,6 @@ function App() {
   }
 
   function handleProjectDelete() {
-
     setProjectsState(prev => {
       return {
         selectedProjectId: undefined,
@@ -62,8 +62,46 @@ function App() {
     })
   }
 
+  const handleAddTask = (task) => {
+    setProjectsState(prev => {
+      return {
+        ...prev,
+        projects: prev.projects.map(project => {
+          if(project.id === task.projectId) {
+            return {
+              ...project,
+              tasks: [...project.tasks, task]
+            }
+          }
+          else {
+            return project
+          }
+        })
+      }
+    })
+  }
+
+  const handleDeleteTask = (deletedTask) => {
+    setProjectsState(prev => {
+      return {
+        ...prev,
+        projects: prev.projects.map(project => {
+          if(project.id === deletedTask.projectId) {
+            return {
+              ...project,
+              tasks: project.tasks.filter(task => task.id !== deletedTask.id)
+            }
+          }
+          else {
+            return project
+          }
+        })
+      }
+    })
+  }
+
   let selectedProject = projectsState.projects.find(project => project.id === projectsState.selectedProjectId)
-  let content = <SelectedProject project={selectedProject} onProjectDelete={handleProjectDelete}/>
+  let content = <SelectedProject project={selectedProject} onProjectDelete={handleProjectDelete} onAddTask={handleAddTask} onDeleteTask={handleDeleteTask}/>
 
   if (projectsState.selectedProjectId === null) {
     content = <NewProject onAddNewProject={handleAddNewProject} onCancelAddProject={handleCancelAddProject}/>
