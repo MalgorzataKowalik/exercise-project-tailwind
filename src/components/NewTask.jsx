@@ -4,6 +4,9 @@ export default function NewTask({onAddTask}) {
   const inputRef = useRef()
 
   const onAddButton = () => {
+    if(inputRef.current.value === '') {
+      return
+    }
     onAddTask(inputRef.current.value)
     inputRef.current.value = ''
   }
